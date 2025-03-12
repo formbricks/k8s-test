@@ -28,3 +28,7 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
           aws-region: "eu-central-1"
+      - name: Test
+        run: |
+          echo "Hello World"
+          aws sts get-caller-identity
