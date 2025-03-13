@@ -1,0 +1,60 @@
+name: Release Helm Chart
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  update-helm-chart:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+#      - name: Extract release version
+#        run: echo "VERSION=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+#
+#      - name: Update Chart.yaml with new version
+#        run: |
+#          sed -i "s/^version: .*/version: ${VERSION#v}/" helm/Chart.yaml
+#          sed -i "s/^appVersion: .*/appVersion: ${VERSION#v}/" helm/Chart.yaml
+#
+#      - name: Commit updated Chart.yaml
+#        run: |
+#          git config --global user.name "github-actions"
+#          git config --global user.email "github-actions@github.com"
+#          git add helm/Chart.yaml
+#          git commit -m "Update Chart.yaml to version ${VERSION}"
+#          git push origin HEAD:main  # Change this if your default branch is different
+#
+#  publish-helm-chart:
+#    needs: update-helm-chart
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v4
+#
+#      - name: Install Helm
+#        run: |
+#          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+#          chmod 700 get_helm.sh
+#          ./get_helm.sh
+#
+#      - name: Package Helm Chart
+#        run: |
+#          mkdir -p helm-charts
+#          helm package helm --destination helm-charts
+#
+#      - name: Publish Helm Chart to GitHub Pages
+#        uses: actions/configure-pages@v3
+#
+#      - name: Upload Helm Chart Artifact
+#        uses: actions/upload-pages-artifact@v2
+#        with:
+#          path: ./helm-charts
+#
+#      - name: Deploy Helm Chart to GitHub Pages
+#        uses: actions/deploy-pages@v2
