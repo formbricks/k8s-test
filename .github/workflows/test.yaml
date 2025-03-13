@@ -3,9 +3,10 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
+    paths:
+      - helm-chart/*
+  workflow_dispatch:
+
 permissions:
   id-token: write
   contents: write
@@ -17,18 +18,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-#      - name: Generate GitHub App Token
-#        id: app-token
-#        uses: actions/create-github-app-token@v1
-#        with:
-#          app-id: ${{ secrets.AUTOMATION_BOT_ID }}
-#          private-key: ${{ secrets.AUTOMATION_BOT_KEY }}
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
         with:
-          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
-          aws-region: "eu-central-1"
-      - name: Test
-        run: |
-          echo "Hello World"
-          aws sts get-caller-identity
+          app-id: ${{ secrets.AUTOMATION_BOT_ID }}
+          private-key: ${{ secrets.AUTOMATION_BOT_KEY }}
