@@ -28,4 +28,31 @@ entries:
     urls:
     - https://github.com/formbricks/k8s-test/releases/download/formbricks-3.3.3/formbricks-3.3.3.tgz
     version: 3.3.3
-generated: "2025-03-13T11:16:39.22322719Z"
+  - apiVersion: v2
+    appVersion: v3.3.1
+    created: "2025-03-13T11:22:04.830580329Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 16.4.16
+    - condition: redis.enabled
+      name: redis
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 20.11.2
+    description: A Helm chart for Formbricks with PostgreSQL, Redis
+    digest: 1ed5c5630ee81f4d44f724ca397962f0b1beebf97c8ccd1aded98108fee11cfd
+    home: https://formbricks.com/docs/self-hosting/setup/kubernetes
+    keywords:
+    - formbricks
+    - postgresql
+    - redis
+    maintainers:
+    - email: info@formbricks.com
+      name: Formbricks
+    name: formbricks
+    type: application
+    urls:
+    - https://github.com/formbricks/k8s-test/releases/download/formbricks-3.3.1/formbricks-3.3.1.tgz
+    version: 3.3.1
+generated: "2025-03-13T11:22:04.830589245Z"
