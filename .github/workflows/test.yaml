@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Generate GitHub App Token
         id: app-token
-        uses: actions/create-github-app-token@v1
+        uses: getsentry/action-github-app-token@v3.1
         with:
-          app-id: ${{ secrets.AUTOMATION_BOT_ID }}
-          private-key: ${{ secrets.AUTOMATION_BOT_KEY }}
+          app_id: ${{ secrets.AUTOMATION_BOT_ID }}
+          private_key: ${{ secrets.AUTOMATION_BOT_KEY }}
