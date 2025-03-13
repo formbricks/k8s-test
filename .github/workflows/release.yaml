@@ -48,6 +48,15 @@ jobs:
                --data-binary @"${CHART_FILE}" \
                "${UPLOAD_URL%\{*}?name=$(basename ${CHART_FILE})"
 
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.7.0
+        with:
+          charts_dir: helm-chart
+          skip_upload: true
+          skip_packaging: true
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
 #
 #  publish-helm-chart:
 #    needs: update-helm-chart
