@@ -16,8 +16,10 @@ jobs:
     name: Test Application
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Generate GitHub App Token
         id: app-token
         uses: getsentry/action-github-app-token@v3
