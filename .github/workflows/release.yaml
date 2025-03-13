@@ -14,21 +14,21 @@ jobs:
         with:
           fetch-depth: 0
 
-#      - name: Extract release version
-#        run: echo "VERSION=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
-#
-#      - name: Update Chart.yaml with new version
-#        run: |
-#          sed -i "s/^version: .*/version: ${VERSION#v}/" helm/Chart.yaml
-#          sed -i "s/^appVersion: .*/appVersion: ${VERSION#v}/" helm/Chart.yaml
-#
-#      - name: Commit updated Chart.yaml
-#        run: |
-#          git config --global user.name "github-actions"
-#          git config --global user.email "github-actions@github.com"
-#          git add helm/Chart.yaml
-#          git commit -m "Update Chart.yaml to version ${VERSION}"
-#          git push origin HEAD:main  # Change this if your default branch is different
+      - name: Extract release version
+        run: echo "VERSION=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+
+      - name: Update Chart.yaml with new version
+        run: |
+          sed -i "s/^version: .*/version: ${VERSION}/" helm-charts/formbricks/Chart.yaml
+          sed -i "s/^appVersion: .*/appVersion: ${VERSION#v}/" helm-charts/formbricks/Chart.yaml
+
+      - name: Commit updated Chart.yaml
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add helm-charts/formbricks/Chart.yaml
+          git commit -m "Update Chart.yaml to version ${VERSION}"
+          git push origin HEAD:main
 #
 #  publish-helm-chart:
 #    needs: update-helm-chart
