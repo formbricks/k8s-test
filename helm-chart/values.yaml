@@ -24,9 +24,9 @@ deployment:
   # Deployment strategy configuration
   strategy:
     type: RollingUpdate  # Type of deployment strategy (RollingUpdate/Recreate)
-    # rollingUpdate:
-    #   maxSurge: 25%
-    #   maxUnavailable: 25%
+    rollingUpdate:
+     maxSurge: 25%
+     maxUnavailable: 25%
 
   # Automatically reload deployment when ConfigMaps or Secrets change
   reloadOnChange: false
