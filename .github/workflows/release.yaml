@@ -19,8 +19,8 @@ jobs:
 
       - name: Update Chart.yaml with new version
         run: |
-          sed -i "s/^version: .*/version: ${VERSION}/" helm-chart/formbricks/Chart.yaml
-          sed -i "s/^appVersion: .*/appVersion: ${VERSION#v}/" helm-chart/formbricks/Chart.yaml
+          sed -i "s/^version: .*/version: ${VERSION#v}/" helm-chart/formbricks/Chart.yaml
+          sed -i "s/^appVersion: .*/appVersion: ${VERSION}/" helm-chart/formbricks/Chart.yaml
 
       - name: Commit updated Chart.yaml
         run: |
@@ -29,6 +29,25 @@ jobs:
           git add helm-chart/formbricks/Chart.yaml
           git commit -m "Update Chart.yaml to version ${VERSION}"
           git push origin HEAD:main
+
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
+
+      - name: Package Helm Chart
+        run: |
+          helm package helm-chart/formbricks --destination helm-chart/
+
+      - name: Upload Helm Chart to GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          UPLOAD_URL="${{ github.event.release.upload_url }}"
+          CHART_FILE=$(ls helm-chart/*.tgz)
+          curl -s -X POST -H "Authorization: token ${GH_TOKEN}" \
+               -H "Content-Type: application/gzip" \
+               --data-binary @"${CHART_FILE}" \
+               "${UPLOAD_URL%\{*}?name=$(basename ${CHART_FILE})"
+
 #
 #  publish-helm-chart:
 #    needs: update-helm-chart
