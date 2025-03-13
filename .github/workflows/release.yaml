@@ -19,14 +19,14 @@ jobs:
 
       - name: Update Chart.yaml with new version
         run: |
-          sed -i "s/^version: .*/version: ${VERSION}/" helm-charts/formbricks/Chart.yaml
-          sed -i "s/^appVersion: .*/appVersion: ${VERSION#v}/" helm-charts/formbricks/Chart.yaml
+          sed -i "s/^version: .*/version: ${VERSION}/" helm-chart/formbricks/Chart.yaml
+          sed -i "s/^appVersion: .*/appVersion: ${VERSION#v}/" helm-chart/formbricks/Chart.yaml
 
       - name: Commit updated Chart.yaml
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
-          git add helm-charts/formbricks/Chart.yaml
+          git add helm-chart/formbricks/Chart.yaml
           git commit -m "Update Chart.yaml to version ${VERSION}"
           git push origin HEAD:main
 #
