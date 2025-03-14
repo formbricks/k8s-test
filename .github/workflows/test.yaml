@@ -31,10 +31,9 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.7.0
+        uses: d3vb0ox/chart-releaser-action@v0.0.1
         with:
           charts_dir: helm-chart
           packages_with_index: true
-          skip_upload: true
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
