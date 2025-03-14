@@ -46,7 +46,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            .cr-release-packages/formbricks-${{ VERSION#v }}.tgz
+            .cr-release-packages/formbricks-${VERSION#v}.tgz
 
       - name: Update index.yaml
         run: |
