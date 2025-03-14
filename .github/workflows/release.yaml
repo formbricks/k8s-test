@@ -15,7 +15,9 @@ jobs:
           fetch-depth: 0
 
       - name: Extract release version
-        run: echo "VERSION=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+        run: |
+          echo "VERSION=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+          echo "STRIPPED_VERSION=${VERSION#V}" >> $GITHUB_ENV
 
       - name: Install YQ
         uses: dcarbone/install-yq-action@v1.3.1
@@ -45,8 +47,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            .cr-release-packages/formbricks-${VERSION#v}.tgz
+          files: .cr-release-packages/formbricks-${{ env.STRIPPED_VERSION }}.tgz
 
       - name: Update index.yaml
         run: |
