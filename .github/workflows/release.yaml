@@ -17,10 +17,8 @@ jobs:
       - name: Extract release version
         run: echo "VERSION=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
 
-      - name: Install yq
-        run: |
-          sudo apt-get update
-          sudo apt-get install yq
+      - name: Install YQ
+        uses: dcarbone/install-yq-action@v1.3.1
 
       - name: Update Chart.yaml with new version
         run: |
