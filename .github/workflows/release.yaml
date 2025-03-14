@@ -17,15 +17,17 @@ jobs:
       - name: Extract release version
         run: |
           echo "VERSION=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+
+      - name: Extract release version
+        run: |
           echo "STRIPPED_VERSION=${VERSION#v}" >> $GITHUB_ENV
-          echo "VERSION: $VERSION"
-          echo "STRIPPED_VERSION: $STRIPPED_VERSION"
 
       - name: Install YQ
         uses: dcarbone/install-yq-action@v1.3.1
 
       - name: Update Chart.yaml with new version
         run: |
+          echo $STRIPPED_VERSION
           yq -i ".version = \"${VERSION#v}\"" helm-chart/formbricks/Chart.yaml
           yq -i ".appVersion = \"${VERSION}\"" helm-chart/formbricks/Chart.yaml
 
