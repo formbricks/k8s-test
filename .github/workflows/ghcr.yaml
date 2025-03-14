@@ -31,8 +31,8 @@ jobs:
 
       - name: Update Chart.yaml with new version
         run: |
-          yq -i ".version = \"${VERSION#v}\"" helm-chart/formbricks/Chart.yaml
-          yq -i ".appVersion = \"${VERSION}\"" helm-chart/formbricks/Chart.yaml
+          yq -i ".version = \"${VERSION#v}\"" helm-charts/formbricks/Chart.yaml
+          yq -i ".appVersion = \"${VERSION}\"" helm-charts/formbricks/Chart.yaml
 
       - name: Package Helm chart
         run: |

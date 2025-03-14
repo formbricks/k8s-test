@@ -41,6 +41,7 @@ jobs:
         run: |
           cr package helm-chart/formbricks
           cr upload --git-repo=k8s-test --release-name-template="v{{ .Version }}" -o formbricks --token ${{ secrets.GITHUB_TOKEN }} --skip-existing
+          git add . && git commit -m "Updated helm chart"
           git fetch -a
           git checkout gh-pages
           git pull origin gh-pages
