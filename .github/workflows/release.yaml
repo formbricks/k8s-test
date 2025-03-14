@@ -17,7 +17,9 @@ jobs:
       - name: Extract release version
         run: |
           echo "VERSION=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
-          echo "STRIPPED_VERSION=${VERSION#V}" >> $GITHUB_ENV
+          echo "STRIPPED_VERSION=${VERSION#v}" >> $GITHUB_ENV
+          echo "VERSION: $VERSION"
+          echo "STRIPPED_VERSION: $STRIPPED_VERSION"
 
       - name: Install YQ
         uses: dcarbone/install-yq-action@v1.3.1
