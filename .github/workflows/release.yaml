@@ -57,11 +57,19 @@ jobs:
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-          git add . && git commit -m "Updated helm chart"
-          git fetch -a
+          
+          # Ensure we are on gh-pages branch before committing
+          git fetch origin gh-pages
           git checkout gh-pages
           git pull origin gh-pages
-          cr index --git-repo=k8s-test --release-name-template="v{{ .Version }}" -o formbricks --token ${{ secrets.GITHUB_TOKEN }} -i ./index.yaml --push
+          
+          # Regenerate the index
+          cr index --git-repo=k8s-test --release-name-template="v{{ .Version }}" -o formbricks --token ${{ secrets.GITHUB_TOKEN }} -i ./index.yaml
+          
+          # Commit and push the changes
+          git add index.yaml
+          git commit -m "Updated Helm chart index for version $VERSION" || echo "No changes to commit"
+          git push origin gh-pages
 
 
 #
