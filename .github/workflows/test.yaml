@@ -31,7 +31,7 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
       - name: Run chart-releaser
-        uses: d3vb0ox/chart-releaser-action@v0.0.4
+        uses: d3vb0ox/chart-releaser-action@v0.0.5
         with:
           charts_dir: helm-chart
         env:
