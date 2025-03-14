@@ -40,11 +40,11 @@ jobs:
       - name: make chart release
         run: |
           cr package helm-chart/formbricks
-          cr upload --git-repo=k8s-test --release-name-template="v{{ .Version }}" -o formbricks --token ${{ sercrets.GITHUB_TOKEN }} --skip-existing
+          cr upload --git-repo=k8s-test --release-name-template="v{{ .Version }}" -o formbricks --token ${{ secrets.GITHUB_TOKEN }} --skip-existing
           git fetch -a
           git checkout gh-pages
           git pull origin gh-pages
-          cr index --git-repo=k8s-test --release-name-template="v{{ .Version }}" -o formbricks --token ${{ sercrets.GITHUB_TOKEN }} -i ./index.yaml --push
+          cr index --git-repo=k8s-test --release-name-template="v{{ .Version }}" -o formbricks --token ${{ secrets.GITHUB_TOKEN }} -i ./index.yaml --push
 
 
 #
