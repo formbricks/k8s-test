@@ -35,5 +35,6 @@ jobs:
         with:
           charts_dir: helm-chart
           packages_with_index: true
+          skip_upload: true
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
