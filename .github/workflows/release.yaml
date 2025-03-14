@@ -17,18 +17,15 @@ jobs:
       - name: Extract release version
         run: echo "VERSION=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
 
+      - name: Install yq
+        run: |
+          sudo apt-get update
+          sudo apt-get install yq
+
       - name: Update Chart.yaml with new version
         run: |
-          sed -i "s/^version: .*/version: ${VERSION#v}/" helm-chart/formbricks/Chart.yaml
-          sed -i "s/^appVersion: .*/appVersion: ${VERSION}/" helm-chart/formbricks/Chart.yaml
-
-      - name: Commit updated Chart.yaml
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git add helm-chart/formbricks/Chart.yaml
-          git commit -m "Update Chart.yaml to version ${VERSION}"
-          git push origin HEAD:main
+          yq -i ".version = \"${VERSION#v}\"" helm-chart/formbricks/Chart.yaml
+          yq -i ".appVersion = \"${VERSION}\"" helm-chart/formbricks/Chart.yaml
 
       - name: Setup Helm
         uses: azure/setup-helm@v3
@@ -37,25 +34,20 @@ jobs:
         run: |
           helm package helm-chart/formbricks --destination helm-chart/
 
-      - name: Upload Helm Chart to GitHub Release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          UPLOAD_URL="${{ github.event.release.upload_url }}"
-          CHART_FILE=$(ls helm-chart/*.tgz)
-          curl -s -X POST -H "Authorization: token ${GH_TOKEN}" \
-               -H "Content-Type: application/gzip" \
-               --data-binary @"${CHART_FILE}" \
-               "${UPLOAD_URL%\{*}?name=$(basename ${CHART_FILE})"
-
-      - name: Run chart-releaser
+      - name: install chart releaser
         uses: helm/chart-releaser-action@v1.7.0
         with:
-          charts_dir: helm-chart
-          skip_upload: true
-          skip_packaging: true
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          install_only: true
+
+      - name: make chart release
+        run: |
+          cr package helm-chart/formbricks
+          cr upload --git-repo=k8s-test --release-name-template="v{{ .Version }}" -o formbricks --token ${{ sercrets.GITHUB_TOKEN }} --skip-existing
+          git fetch -a
+          git checkout gh-pages
+          git pull origin gh-pages
+          cr index --git-repo=k8s-test --release-name-template="v{{ .Version }}" -o formbricks --token ${{ sercrets.GITHUB_TOKEN }} -i ./index.yaml --push
+
 
 #
 #  publish-helm-chart:
