@@ -40,4 +40,4 @@ jobs:
 
       - name: Push Helm chart to GitHub Container Registry
         run: |
-          helm push formbricks-chart-${VERSION#v}.tgz oci://ghcr.io/formbricks/k8s-test
+          helm push formbricks-helm-${VERSION#v}.tgz oci://ghcr.io/formbricks/formbricks
