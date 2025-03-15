@@ -24,9 +24,9 @@ deployment:
   # Deployment strategy configuration
   strategy:
     type: RollingUpdate  # Type of deployment strategy (RollingUpdate/Recreate)
-    rollingUpdate:
-     maxSurge: 25%
-     maxUnavailable: 25%
+    # rollingUpdate:
+    #   maxSurge: 25%
+    #   maxUnavailable: 25%
 
   # Automatically reload deployment when ConfigMaps or Secrets change
   reloadOnChange: false
@@ -54,9 +54,9 @@ deployment:
 
   # Environment variables from ConfigMaps or Secrets
   envFrom:
-  #  app-secrets:
-  #    type: secret
-  #    nameSuffix: app-secrets
+    # app-secrets:
+    #   type: secret
+    #   nameSuffix: app-secrets
 
   # Environment variables passed to the app container
   env:
@@ -82,7 +82,6 @@ deployment:
     repository: "ghcr.io/formbricks/formbricks"
     digest: ""  # If set, digest takes precedence over the tag
     pullPolicy: IfNotPresent
-    tag: latest
 
   # Health probes configuration
   probes:

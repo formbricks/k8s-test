@@ -10,27 +10,27 @@ Accessing Your Application:
 {{- if .Values.ingress.enabled }}
    Your application is accessible via the configured Ingress.
    ```sh
-   kubectl get ingress {{ include "formbricks.name" . }} -n {{ .Release.Namespace }} -o jsonpath='{.items[*].spec.rules[*].host}' | tr ' ' '\n'
+   kubectl get ingress {{ include "formbricks-helm.name" . }} -n {{ .Release.Namespace }} -o jsonpath='{.items[*].spec.rules[*].host}' | tr ' ' '\n'
    ```
    Ensure that your DNS points to the cluster's Ingress Controller.
 {{- else if contains "LoadBalancer" .Values.service.type }}
    Your application is exposed via a LoadBalancer.
    Run the following to get the external IP:
    ```sh
-   kubectl get svc {{ include "formbricks.name" . }} -n {{ .Release.Namespace }}
+   kubectl get svc {{ include "formbricks-helm.name" . }} -n {{ .Release.Namespace }}
    ```
 {{- else if contains "NodePort" .Values.service.type }}
    Your application is accessible via NodePort.
    Run the following to get the assigned port:
    ```sh
-   kubectl get svc {{ include "formbricks.name" . }} -n {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}"
+   kubectl get svc {{ include "formbricks-helm.name" . }} -n {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}"
    ```
    Then access the service at: `http://<NodeIP>:<NodePort>`
 {{- else }}
    Your application is running inside the cluster (ClusterIP service type).
    To access it locally, run:
    ```sh
-   kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "formbricks.name" . }} 3000
+   kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "formbricks-helm.name" . }} 3000
    ```
    Then visit: **http://localhost:3000**
 {{- end }}
@@ -43,10 +43,10 @@ Database (PostgreSQL) Access:
    PostgreSQL is deployed within your cluster.
    Retrieve the password using:
    ```sh
-   kubectl get secret --namespace {{ .Release.Namespace }} {{ include "formbricks.name" . }}-app-secrets -o jsonpath="{.data.POSTGRES_USER_PASSWORD}" | base64 --decode
+   kubectl get secret --namespace {{ .Release.Namespace }} {{ include "formbricks-helm.name" . }}-app-secrets -o jsonpath="{.data.POSTGRES_USER_PASSWORD}" | base64 --decode
    ```
    Connection details:
-   - **Host**: `{{ include "formbricks.name" . }}-postgresql`
+   - **Host**: `{{ include "formbricks-helm.name" . }}-postgresql`
    - **Port**: `5432`
    - **Database**: `{{ .Values.postgresql.auth.database }}`
    - **Username**: `{{ .Values.postgresql.auth.username }}`
@@ -66,10 +66,10 @@ Redis Access:
    Redis is deployed within your cluster.
    Retrieve the password using:
    ```sh
-   kubectl get secret --namespace {{ .Release.Namespace }} {{ include "formbricks.name" . }}-app-secrets -o jsonpath="{.data.REDIS_PASSWORD}" | base64 --decode
+   kubectl get secret --namespace {{ .Release.Namespace }} {{ include "formbricks-helm.name" . }}-app-secrets -o jsonpath="{.data.REDIS_PASSWORD}" | base64 --decode
    ```
    Connection details:
-   - **Host**: `{{ include "formbricks.name" . }}-redis-master`
+   - **Host**: `{{ include "formbricks-helm.name" . }}-redis-master`
    - **Port**: `6379`
 {{- else if .Values.redis.externalRedisUrl }}
    You're using an external Redis instance.
@@ -94,9 +94,9 @@ The following environment variables have been automatically generated:
 
 Retrieve them using:
 ```sh
-kubectl get secret --namespace {{ .Release.Namespace }} {{ include "formbricks.name" . }}-app-secrets -o jsonpath="{.data.NEXTAUTH_SECRET}" | base64 --decode
-kubectl get secret --namespace {{ .Release.Namespace }} {{ include "formbricks.name" . }}-app-secrets -o jsonpath="{.data.ENCRYPTION_KEY}" | base64 --decode
-kubectl get secret --namespace {{ .Release.Namespace }} {{ include "formbricks.name" . }}-app-secrets -o jsonpath="{.data.CRON_SECRET}" | base64 --decode
+kubectl get secret --namespace {{ .Release.Namespace }} {{ include "formbricks-helm.name" . }}-app-secrets -o jsonpath="{.data.NEXTAUTH_SECRET}" | base64 --decode
+kubectl get secret --namespace {{ .Release.Namespace }} {{ include "formbricks-helm.name" . }}-app-secrets -o jsonpath="{.data.ENCRYPTION_KEY}" | base64 --decode
+kubectl get secret --namespace {{ .Release.Namespace }} {{ include "formbricks-helm.name" . }}-app-secrets -o jsonpath="{.data.CRON_SECRET}" | base64 --decode
 ```
 
 ---
@@ -110,13 +110,13 @@ Scaling:
 
    Check HPA status:
    ```sh
-   kubectl get hpa -n {{ .Release.Namespace }} {{ include "formbricks.name" . }}
+   kubectl get hpa -n {{ .Release.Namespace }} {{ include "formbricks-helm.name" . }}
    ```
 {{- else }}
    HPA is **not enabled**. Your deployment has a fixed number of `{{ .Values.replicaCount }}` replicas.
    Manually scale using:
    ```sh
-   kubectl scale deployment -n {{ .Release.Namespace }} {{ include "formbricks.name" . }} --replicas=<desired_number>
+   kubectl scale deployment -n {{ .Release.Namespace }} {{ include "formbricks-helm.name" . }} --replicas=<desired_number>
    ```
 {{- end }}
 

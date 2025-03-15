@@ -1,23 +1,18 @@
 apiVersion: v2
-name: formbricks
+name: formbricks-helm
 description: A Helm chart for Formbricks with PostgreSQL, Redis
-
+icon: https://formbricks.com/_next/static/media/footerlogo.e272c0f1.svg
 type: application
-
 # Helm chart Version
 version: 0.0.0-dev
-
 keywords:
   - formbricks
   - postgresql
   - redis
-
 home: https://formbricks.com/docs/self-hosting/setup/kubernetes
 maintainers:
   - name: Formbricks
     email: info@formbricks.com
-
-
 dependencies:
   - name: postgresql
     version: "16.4.16"

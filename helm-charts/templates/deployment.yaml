@@ -2,9 +2,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "formbricks.name" . }}
+  name: {{ include "formbricks-helm.name" . }}
   labels:
-    {{- include "formbricks.labels" . | nindent 4 }}
+    {{- include "formbricks-helm.labels" . | nindent 4 }}
     {{- if .Values.deployment.additionalLabels }}
     {{- toYaml .Values.deployment.additionalLabels | nindent 4 }}
     {{- end }}
@@ -20,7 +20,7 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "formbricks.selectorLabels" . | nindent 6 }}
+      {{- include "formbricks-helm.selectorLabels" . | nindent 6 }}
   {{- if .Values.deployment.strategy }}
   strategy:
     {{- toYaml .Values.deployment.strategy | nindent 4 }}
@@ -31,7 +31,7 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "formbricks.selectorLabels" . | nindent 8 }}
+        {{- include "formbricks-helm.selectorLabels" . | nindent 8 }}
         {{- if .Values.deployment.additionalPodLabels }}
         {{- toYaml .Values.deployment.additionalPodLabels | nindent 8 }}
         {{- end }}
@@ -67,7 +67,7 @@ spec:
       hostNetwork: true
       {{- end }}
       {{- if .Values.rbac.serviceAccount.enabled }}
-      serviceAccountName: {{ .Values.rbac.serviceAccount.name | default (include "formbricks.name" .) }}
+      serviceAccountName: {{ .Values.rbac.serviceAccount.name | default (include "formbricks-helm.name" .) }}
       {{- end }}
       {{- if .Values.deployment.securityContext }}
       securityContext:
@@ -75,8 +75,8 @@ spec:
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.deployment.terminationGracePeriodSeconds | default 30 }}
       containers:
-        - name: {{ template "formbricks.name" . }}
-          image: "{{ .Values.deployment.image.repository }}:{{ .Chart.AppVersion | default .Values.deployment.image.tag }}"
+        - name: {{ template "formbricks-helm.name" . }}
+          image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
           {{- if .Values.deployment.command }}
           command:
@@ -100,21 +100,21 @@ spec:
           {{- if (eq .type "configmap") }}
           - configMapRef:
               {{- if .name }}
-              name: {{ include "formbricks.tplvalues.render" ( dict "value" $value.name "context" $ ) }}
+              name: {{ include "formbricks-helm.tplvalues.render" ( dict "value" $value.name "context" $ ) }}
               {{- else if .nameSuffix }}
-              name: {{ template "formbricks.name" $ }}-{{ include "formbricks.tplvalues.render" ( dict "value" $value.nameSuffix "context" $ ) }}
+              name: {{ template "formbricks-helm.name" $ }}-{{ include "formbricks-helm.tplvalues.render" ( dict "value" $value.nameSuffix "context" $ ) }}
               {{- else }}
-              name: {{ template "formbricks.name" $ }}
+              name: {{ template "formbricks-helm.name" $ }}
               {{- end }}
           {{- end }}
           {{- if (eq .type "secret") }}
           - secretRef:
               {{- if .name }}
-              name: {{ include "formbricks.tplvalues.render" ( dict "value" $value.name "context" $ ) }}
+              name: {{ include "formbricks-helm.tplvalues.render" ( dict "value" $value.name "context" $ ) }}
               {{- else if .nameSuffix }}
-              name: {{ template "formbricks.name" $ }}-{{ include "formbricks.tplvalues.render" ( dict "value" $value.nameSuffix "context" $ ) }}
+              name: {{ template "formbricks-helm.name" $ }}-{{ include "formbricks-helm.tplvalues.render" ( dict "value" $value.nameSuffix "context" $ ) }}
               {{- else }}
-              name: {{ template "formbricks.name" $ }}
+              name: {{ template "formbricks-helm.name" $ }}
               {{- end }}
           {{- end }}
           {{- end }}
@@ -122,45 +122,11 @@ spec:
           env:
             {{- if and (.Values.enterprise.enabled) (ne .Values.enterprise.licenseKey "") }}
             - name: ENTERPRISE_LICENSE_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "formbricks.name" . }}-app-secrets
-                  key: ENTERPRISE_LICENSE_KEY
-            {{- else if  and (.Values.enterprise.enabled) (eq .Values.enterprise.licenseKey "") }}
-            - name: ENTERPRISE_LICENSE_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "formbricks.name" . }}-app-secrets
-                  key: ENTERPRISE_LICENSE_KEY
+              value: {{ .Values.enterprise.licenseKey | quote }}
             {{- end }}
-            - name: REDIS_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "formbricks.name" . }}-app-secrets
-                  key: REDIS_URL
-            - name: DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "formbricks.name" . }}-app-secrets
-                  key: DATABASE_URL
-            - name: CRON_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "formbricks.name" . }}-app-secrets
-                  key: CRON_SECRET
-            - name: ENCRYPTION_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "formbricks.name" . }}-app-secrets
-                  key: ENCRYPTION_KEY
-            - name: NEXTAUTH_SECRET
-              valueFrom:
-                  secretKeyRef:
-                    name: {{ template "formbricks.name" . }}-app-secrets
-                    key: NEXTAUTH_SECRET
             {{- range $key, $value := .Values.deployment.env }}
-            - name: {{ include "formbricks.tplvalues.render" ( dict "value" $key "context" $ ) }}
-    {{ include "formbricks.tplvalues.render" ( dict "value" $value "context" $ ) | indent 10 }}
+            - name: {{ include "formbricks-helm.tplvalues.render" ( dict "value" $key "context" $ ) }}
+    {{ include "formbricks-helm.tplvalues.render" ( dict "value" $value "context" $ ) | indent 10 }}
             {{- end }}
           {{- if .Values.deployment.resources }}
           resources:
