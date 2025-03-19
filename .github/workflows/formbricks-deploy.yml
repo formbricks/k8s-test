@@ -16,7 +16,7 @@ jobs:
   docker-build:
     name: Build stable docker image
     if: startsWith(github.ref, 'refs/tags/v')
-    uses: ./.github/workflows/release-docker-github.yml
+    uses: ./.github/workflows/build-docker.yml
 
 #  docker-build-experimental:
 #    name: Build experimental docker image
