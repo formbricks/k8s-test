@@ -33,6 +33,9 @@ jobs:
           TAG=${TAG#refs/tags/v}
           echo "RELEASE_TAG=$TAG" >> $GITHUB_ENV
 
+      - name: Set up Depot CLI
+        uses: depot/setup-action@b0b1ea4f69e92ebf5dea3f8713a1b0c37b2126a5
+
       - name: Update package.json version
         run: |
           sed -i "s/\"version\": \"0.0.0\"/\"version\": \"${{ env.RELEASE_TAG }}\"/" ./apps/web/package.json
@@ -55,7 +58,7 @@ jobs:
       # It uses the `tags` and `labels` parameters to tag and label the image with the output from the "meta" step.
       - name: Build and push Docker image
         id: push
-        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        uses: depot/build-push-action@636daae76684e38c301daa0c5eca1c095b24e780
         with:
           context: .
           file: ./apps/web/Dockerfile
