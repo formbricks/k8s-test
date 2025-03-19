@@ -1,0 +1,74 @@
+{
+  "name": "formbricks",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "prisma": {
+    "schema": "packages/database/schema.prisma"
+  },
+  "scripts": {
+    "clean": "turbo run clean && rimraf node_modules .turbo coverage out",
+    "build": "turbo run build",
+    "build:dev": "turbo run build:dev",
+    "db:migrate:dev": "turbo run db:migrate:dev",
+    "db:migrate:deploy": "turbo run db:migrate:deploy",
+    "db:start": "turbo run db:start",
+    "db:push": "turbo run db:push",
+    "db:up": "docker compose -f docker-compose.dev.yml up -d",
+    "db:down": "docker compose -f docker-compose.dev.yml down",
+    "go": "pnpm db:up && turbo run go --concurrency 20",
+    "dev": "turbo run dev --parallel",
+    "pre-commit": "lint-staged",
+    "start": "turbo run start --parallel",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "generate": "turbo run generate",
+    "lint": "turbo run lint",
+    "release": "turbo run build --filter=@formbricks/js... && changeset publish",
+    "test": "turbo run test --no-cache",
+    "test:e2e": "playwright test",
+    "test-e2e:azure": "pnpm test:e2e -c playwright.service.config.ts --workers=20",
+    "prepare": "husky install",
+    "storybook": "turbo run storybook",
+    "fb-migrate-dev": "pnpm --filter @formbricks/database create-migration && pnpm prisma generate",
+    "tolgee-pull": "BRANCH_NAME=$(node -p \"require('./branch.json').branchName\") && tolgee pull --tags \"draft:$BRANCH_NAME\" \"production\" && prettier --write ./packages/lib/messages/*.json"
+  },
+  "devDependencies": {
+    "@azure/microsoft-playwright-testing": "1.0.0-beta.6",
+    "@formbricks/eslint-config": "workspace:*",
+    "@playwright/test": "1.49.1",
+    "eslint": "8.57.0",
+    "husky": "9.1.7",
+    "lint-staged": "15.2.11",
+    "rimraf": "6.0.1",
+    "tsx": "4.19.2",
+    "turbo": "2.3.3"
+  },
+  "lint-staged": {
+    "(apps|packages)/**/*.{js,ts,jsx,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.json": [
+      "prettier --write"
+    ],
+    "packages/database/schema.prisma": [
+      "prisma format"
+    ]
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "nextBundleAnalysis": {
+    "budget": 358400,
+    "budgetPercentIncreaseRed": 20,
+    "minimumChangeThreshold": 0,
+    "showDetails": true
+  },
+  "dependencies": {
+    "@changesets/cli": "2.27.10"
+  }
+}
