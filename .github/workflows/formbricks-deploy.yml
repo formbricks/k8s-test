@@ -27,7 +27,7 @@ jobs:
     name: Release Helm Chart
     uses: ./.github/workflows/release-helm-chart.yml
     needs:
-      - docker
+      - docker-build
 
 
 
