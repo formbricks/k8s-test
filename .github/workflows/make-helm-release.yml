@@ -26,16 +26,14 @@ jobs:
       - name: Setup Cluster Access
         run: |
           aws eks update-kubeconfig --region eu-central-1 --name formbricks-prod-eks --kubeconfig ./kubeconfig
-          echo "KUBECONFIG=./kubeconfig" >> $GITHUB_ENV
       - uses: helmfile/helmfile-action@v2
         env:
           VERSION: ${{ inputs.VERSION }}
-          KUBECONFIG: "./kubeconfig"
         with:
           helm-plugins: >
             https://github.com/databus23/helm-diff,
             https://github.com/jkroepke/helm-secrets
-          helmfile-args: diff
+          helmfile-args: diff --kubeconfig ./kubeconfig
           helmfile-auto-init: "false"
           helmfile-workdirectory: infra/deployment
 
