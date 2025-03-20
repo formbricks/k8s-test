@@ -4,6 +4,9 @@ name: Create and publish a Docker image
 # Configures this workflow to run every time a change is pushed to the branch called `release`.
 on:
   workflow_call:
+    outputs:
+      description: release version
+      VERSION: ${{ steps.extract_release_tag.outputs.VERSION }}
 
 
 # Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
@@ -22,6 +25,8 @@ jobs:
       attestations: write
       id-token: write
       #
+    outputs:
+      VERSION: ${{ steps.extract_release_tag.outputs.VERSION }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -32,6 +37,7 @@ jobs:
           TAG=${{ github.ref }}
           TAG=${TAG#refs/tags/v}
           echo "RELEASE_TAG=$TAG" >> $GITHUB_ENV
+          echo "VERSION=$TAG" >> $GITHUB_OUTPUT
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3

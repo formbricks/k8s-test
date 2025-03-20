@@ -28,6 +28,17 @@ jobs:
     uses: ./.github/workflows/release-helm-chart.yml
     needs:
       - docker-build
+    with:
+      VERSION: ${{ needs.docker-build.outputs.VERSION }}
+
+  helm-deployment:
+    name: Deploy Helm Chart
+    uses: ./.github/workflows/deploy-helm-chart.yml
+    needs:
+      - docker-build
+      - helm-chart-release
+    with:
+      VERSION: ${{ needs.docker-build.outputs.VERSION }}
 
 
 
