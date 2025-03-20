@@ -33,6 +33,7 @@ jobs:
 
   helm-deployment:
     name: Deploy Helm Chart
+    secrets: inherit
     uses: ./.github/workflows/make-helm-release.yml
     needs:
       - docker-build
