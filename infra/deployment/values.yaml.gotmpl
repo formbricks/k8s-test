@@ -79,7 +79,7 @@ deployment:
     RATE_LIMITING_DISABLED:
       value: "1"
     S3_BUCKET_NAME:
-      value: {{ requiredEnv "FORMBRICKS_S3_BUCKET" }}
+      value: ""
   envFrom:
     app-env:
       nameSuffix: app-env
@@ -95,7 +95,7 @@ autoscaling:
 ingress:
   enabled: true
   annotations:
-    alb.ingress.kubernetes.io/certificate-arn: {{ requiredEnv "FORMBRICKS_INGRESS_CERT_ARN" }}
+    alb.ingress.kubernetes.io/certificate-arn: ""
     alb.ingress.kubernetes.io/group.name: formbricks
     alb.ingress.kubernetes.io/healthcheck-path: /health
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
@@ -116,7 +116,7 @@ rbac:
   enabled: true
   serviceAccount:
     annotations:
-      eks.amazonaws.com/role-arn: {{ requiredEnv "FORMBRICKS_ROLE_ARN" }}
+      eks.amazonaws.com/role-arn: ""
     enabled: true
     name: formbricks
 

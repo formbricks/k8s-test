@@ -29,12 +29,7 @@ jobs:
       - uses: helmfile/helmfile-action@v2
         env:
           VERSION: ${{ inputs.VERSION }}
-          FORMBRICKS_S3_BUCKET: ${{ secrets.FORMBRICKS_S3_BUCKET }}
-          FORMBRICKS_ROLE_ARN: ${{ secrets.FORMBRICKS_ROLE_ARN }}
-          FORMBRICKS_INGRESS_CERT_ARN: ${{ secrets.FORMBRICKS_INGRESS_CERT_ARN }}
         with:
-          helmfile-version: 'v0.150.0'
-          helm-version: 'v3.11.0'
           helm-plugins: >
             https://github.com/databus23/helm-diff,
             https://github.com/jkroepke/helm-secrets
