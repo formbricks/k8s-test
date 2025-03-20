@@ -7,9 +7,9 @@ releases:
   - name: formbricks
     namespace: formbricks
     chart: formbricks/formbricks
-    version: {{ requiredVersion "VERSION" }}
+    version: {{ requiredEnv "VERSION" }}
     values:
       - values.yaml.gotmpl
     set:
       - name: deployment.image.tag
-        value: v{{ requiredVersion "VERSION" }}
+        value: v{{ requiredEnv "VERSION" }}
