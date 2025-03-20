@@ -31,7 +31,6 @@ jobs:
       - uses: helmfile/helmfile-action@v2
         env:
           VERSION: ${{ inputs.VERSION }}
-          KUBECONFIG: "./kubeconfig"
         with:
           helmfile-version: 'v0.150.0'
           helm-version: 'v3.8.0'
