@@ -25,10 +25,7 @@ jobs:
           aws-region: "eu-central-1"
       - name: Setup Cluster Access
         run: |
-          aws eks update-kubeconfig --name formbricks-prod-eks --kubeconfig ./kubeconfig
-          echo 'KUBE_CONFIG_DATA<<EOF' >> $GITHUB_ENV
-          echo $(cat ./kubeconfig | base64) >> $GITHUB_ENV
-          echo 'EOF' >> $GITHUB_ENV
+          aws eks update-kubeconfig --name formbricks-prod-eks --region eu-central-1
         env:
           AWS_REGION: eu-central-1
       - uses: helmfile/helmfile-action@v2
