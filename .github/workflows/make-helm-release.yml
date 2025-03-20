@@ -32,8 +32,6 @@ jobs:
         env:
           VERSION: ${{ inputs.VERSION }}
         with:
-          helmfile-version: 'v0.150.0'
-          helm-version: 'v3.8.0'
           helm-plugins: >
             https://github.com/databus23/helm-diff,
             https://github.com/jkroepke/helm-secrets
