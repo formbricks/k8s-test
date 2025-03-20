@@ -7,7 +7,7 @@ on:
     outputs:
       VERSION:
         description: release version
-        value: ${{ steps.extract_release_tag.outputs.VERSION }}
+        value: ${{ jobs.build-and-push-image.outputs.VERSION }}
 
 
 # Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
