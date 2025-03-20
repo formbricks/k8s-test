@@ -1,6 +1,6 @@
 repositories:
   - name: formbricks
-    url: ghcr.io/formbricks/helm-charts
+    url: ghcr.io/formbricks/k8s-test
     oci: true
 
 releases:
