@@ -35,6 +35,6 @@ jobs:
           helm-plugins: >
             https://github.com/databus23/helm-diff,
             https://github.com/jkroepke/helm-secrets
-          helmfile-args: diff
+          helmfile-args: diff infra/deployment/helmfile.yaml
           helmfile-auto-init: "false"
 
