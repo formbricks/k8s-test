@@ -25,7 +25,7 @@ jobs:
     with:
       VERSION: ${{ needs.docker-build.outputs.VERSION }}
 
-  helm-deployment:
+  helm-deployment-diff:
     name: Deploy Helm Chart
     secrets: inherit
     uses: ./.github/workflows/make-helm-release.yml
@@ -34,9 +34,3 @@ jobs:
       - helm-chart-release
     with:
       VERSION: ${{ needs.docker-build.outputs.VERSION }}
-
-
-
-
-
-

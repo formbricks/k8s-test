@@ -1,0 +1,270 @@
+autoscaling:
+  additionalLabels: {}
+  annotations: {}
+  enabled: true
+  maxReplicas: 10
+  metrics:
+    - resource:
+        name: cpu
+        target:
+          averageUtilization: 60
+          type: Utilization
+      type: Resource
+    - resource:
+        name: memory
+        target:
+          averageUtilization: 60
+          type: Utilization
+      type: Resource
+  minReplicas: 1
+componentOverride: ""
+cronJob:
+  enabled: true
+  jobs:
+    ping:
+      args:
+        - /bin/sh
+        - -c
+        - 'curl -X POST -H "content-type: application/json" -H "x-api-key: $CRON_SECRET"
+        "$WEBAPP_URL/api/cron/ping"'
+      env:
+        CRON_SECRET:
+          valueFrom:
+            secretKeyRef:
+              key: CRON_SECRET
+              name: formbricks-app-env
+        WEBAPP_URL:
+          valueFrom:
+            secretKeyRef:
+              key: WEBAPP_URL
+              name: formbricks-app-env
+      image:
+        imagePullPolicy: IfNotPresent
+        repository: curlimages/curl
+        tag: latest
+      schedule: 0 9 * * *
+      successfulJobsHistoryLimit: 0
+    survey-status:
+      args:
+        - /bin/sh
+        - -c
+        - 'curl -X POST -H "content-type: application/json" -H "x-api-key: $CRON_SECRET"
+        "$WEBAPP_URL/api/cron/survey-status"'
+      env:
+        CRON_SECRET:
+          valueFrom:
+            secretKeyRef:
+              key: CRON_SECRET
+              name: formbricks-app-env
+        WEBAPP_URL:
+          valueFrom:
+            secretKeyRef:
+              key: WEBAPP_URL
+              name: formbricks-app-env
+      image:
+        imagePullPolicy: IfNotPresent
+        repository: curlimages/curl
+        tag: latest
+      schedule: 0 0 * * *
+      successfulJobsHistoryLimit: 0
+    weekely-summary:
+      args:
+        - /bin/sh
+        - -c
+        - 'curl -X POST -H "content-type: application/json" -H "x-api-key: $CRON_SECRET"
+        "$WEBAPP_URL/api/cron/weekly-summary"'
+      env:
+        CRON_SECRET:
+          valueFrom:
+            secretKeyRef:
+              key: CRON_SECRET
+              name: formbricks-app-env
+        WEBAPP_URL:
+          valueFrom:
+            secretKeyRef:
+              key: WEBAPP_URL
+              name: formbricks-app-env
+      image:
+        imagePullPolicy: IfNotPresent
+        repository: curlimages/curl
+        tag: latest
+      schedule: 0 8 * * 1
+      successfulJobsHistoryLimit: 0
+deployment:
+  additionalLabels: {}
+  additionalPodAnnotations: {}
+  additionalPodLabels: {}
+  affinity: {}
+  annotations:
+    last_updated_at: "2025-03-21T05:55:15Z"
+  args: []
+  command: []
+  containerSecurityContext:
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+  env:
+    DOCKER_CRON_ENABLED:
+      value: "0"
+    RATE_LIMITING_DISABLED:
+      value: "1"
+  envFrom:
+    app-env:
+      nameSuffix: app-env
+      type: secret
+  image:
+    digest: ""
+    pullPolicy: IfNotPresent
+    repository: ghcr.io/formbricks/formbricks
+  imagePullSecrets: ""
+  nodeSelector:
+    karpenter.sh/capacity-type: on-demand
+  ports:
+    http:
+      containerPort: 3000
+      exposed: true
+      protocol: TCP
+    metrics:
+      containerPort: 9464
+      exposed: true
+      protocol: TCP
+  probes:
+    livenessProbe:
+      failureThreshold: 5
+      httpGet:
+        path: /health
+        port: 3000
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 5
+    readinessProbe:
+      failureThreshold: 5
+      httpGet:
+        path: /health
+        port: 3000
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 5
+    startupProbe:
+      failureThreshold: 30
+      periodSeconds: 10
+      tcpSocket:
+        port: 3000
+  reloadOnChange: false
+  replicas: 1
+  resources:
+    limits:
+      memory: 2Gi
+    requests:
+      cpu: "1"
+      memory: 1Gi
+  revisionHistoryLimit: 2
+  securityContext: {}
+  strategy:
+    type: RollingUpdate
+  tolerations: []
+  topologySpreadConstraints: []
+enterprise:
+  enabled: false
+  licenseKey: ""
+externalSecret:
+  enabled: true
+  files:
+    app-env:
+      dataFrom:
+        key: prod/formbricks/environment
+    app-secrets:
+      dataFrom:
+        key: prod/formbricks/secrets
+  refreshInterval: 1m
+  secretStore:
+    kind: ClusterSecretStore
+    name: aws-secrets-manager
+ingress:
+  annotations:
+    alb.ingress.kubernetes.io/group.name: formbricks
+    alb.ingress.kubernetes.io/healthcheck-path: /health
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS13-1-2-2021-06
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    alb.ingress.kubernetes.io/target-type: ip
+  enabled: true
+  hosts:
+    - host: app.k8s.formbricks.com
+      paths:
+        - path: /
+          pathType: Prefix
+          serviceName: formbricks
+  ingressClassName: alb
+nameOverride: ""
+partOfOverride: ""
+postgresql:
+  auth:
+    database: formbricks
+    existingSecret: formbricks-app-secrets
+    secretKeys:
+      adminPasswordKey: POSTGRES_ADMIN_PASSWORD
+      userPasswordKey: POSTGRES_USER_PASSWORD
+    username: formbricks
+  enabled: false
+  externalDatabaseUrl: ""
+  fullnameOverride: formbricks-postgresql
+  global:
+    security:
+      allowInsecureImages: true
+  image:
+    repository: pgvector/pgvector
+    tag: 0.8.0-pg17
+  primary:
+    containerSecurityContext:
+      enabled: true
+      readOnlyRootFilesystem: false
+      runAsUser: 1001
+    networkPolicy:
+      enabled: false
+    persistence:
+      enabled: true
+      size: 10Gi
+    podSecurityContext:
+      enabled: true
+      fsGroup: 1001
+      runAsUser: 1001
+rbac:
+  enabled: true
+  serviceAccount:
+    additionalLabels: {}
+    enabled: true
+    name: formbricks
+redis:
+  architecture: standalone
+  auth:
+    enabled: true
+    existingSecret: formbricks-app-secrets
+    existingSecretPasswordKey: REDIS_PASSWORD
+  enabled: false
+  externalRedisUrl: ""
+  fullnameOverride: formbricks-redis
+  master:
+    persistence:
+      enabled: true
+  networkPolicy:
+    enabled: false
+reloadOnChange: true
+secret:
+  enabled: false
+service:
+  additionalLabels: {}
+  annotations: {}
+  enabled: true
+  ports: []
+  type: ClusterIP
+serviceMonitor:
+  additionalLabels: null
+  annotations: null
+  enabled: true
+  endpoints:
+    - interval: 5s
+      path: /metrics
+      port: metrics
