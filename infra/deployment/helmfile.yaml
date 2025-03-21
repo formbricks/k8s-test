@@ -13,7 +13,7 @@ releases:
       - name: deployment.image.tag
         value: v{{ requiredEnv "VERSION" }}
       - name: deployment.image.repository
-        value: {{ env "REPOSITORY" | default "ghcr.io/formbricks/k8s-test" }}
+        value: {{ requiredEnv "REPOSITORY" }}
       - name: deployment.env.S3_BUCKET_NAME.value
         value: {{ requiredEnv "FORMBRICKS_S3_BUCKET" }}
       - name: ingress.annotations."alb.ingress.kubernetes.io/certificate-arn"
