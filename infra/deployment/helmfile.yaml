@@ -9,7 +9,7 @@ releases:
     chart: helm-charts/formbricks
     version: ^3.0.0
     values:
-      - values.yaml
+      - values.yaml.gotmpl
     set:
       - name: deployment.image.tag
         value: v{{ requiredEnv "VERSION" }}
