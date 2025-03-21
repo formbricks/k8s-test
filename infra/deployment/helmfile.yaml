@@ -15,9 +15,3 @@ releases:
         value: v{{ requiredEnv "VERSION" }}
       - name: deployment.image.repository
         value: {{ requiredEnv "REPOSITORY" }}
-      - name: deployment.env.S3_BUCKET_NAME.value
-        value: {{ requiredEnv "FORMBRICKS_S3_BUCKET" }}
-      - name: ingress.annotations."alb.ingress.kubernetes.io/certificate-arn"
-        value: {{ requiredEnv "FORMBRICKS_INGRESS_CERT_ARN" }}
-      - name: rbac.serviceAccount.annotations."eks.amazonaws.com/role-arn"
-        value: {{ requiredEnv "FORMBRICKS_ROLE_ARN" }}
