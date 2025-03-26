@@ -60,7 +60,6 @@ jobs:
 
       - name: Post PR comment
         uses: borchero/terraform-plan-comment@3399d8dbae8b05185e815e02361ede2949cd99c4 # v2.4.0
-        if: always() && github.ref != 'refs/heads/main' && (steps.validate.outcome == 'success' || steps.validate.outcome == 'failure')
         with:
           token: ${{ github.token }}
           planfile: .planfile
