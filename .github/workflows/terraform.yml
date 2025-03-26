@@ -13,6 +13,8 @@ on:
 permissions:
   id-token: write
   contents: write
+  issues: write
+  pull-requests: write
 
 jobs:
   terraform:
@@ -60,12 +62,19 @@ jobs:
 
       - name: Post PR comment
         uses: borchero/terraform-plan-comment@3399d8dbae8b05185e815e02361ede2949cd99c4 # v2.4.0
-        if: always() && github.ref != 'refs/heads/main' && (steps.validate.outcome == 'success' || steps.validate.outcome == 'failure')
         with:
           token: ${{ github.token }}
           planfile: .planfile
           working-directory: "infra/terraform"
           skip-comment: false
+
+      - name: Comment Terraform Plan on PR
+        uses: blinqas/tf-plan-pr-comment@v1
+        with:
+          output_file: infra/terraform/.planfile
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
 #      - name: Terraform Apply
 #        id: apply
