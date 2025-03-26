@@ -3,12 +3,12 @@ name: 'Terraform'
 on:
   workflow_dispatch:
 # TODO: enable it back when migration is completed.
-#  push:
-#    branches:
-#      - main
-#  pull_request:
-#    branches:
-#      - main
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 permissions:
   id-token: write
