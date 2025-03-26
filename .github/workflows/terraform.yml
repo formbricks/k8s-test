@@ -66,6 +66,13 @@ jobs:
           working-directory: "infra/terraform"
           skip-comment: false
 
+      - name: Comment Terraform Plan on PR
+        uses: blinqas/tf-plan-pr-comment@v1
+        with:
+          output_file: infra/terraform/.planfile
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
 #      - name: Terraform Apply
 #        id: apply
